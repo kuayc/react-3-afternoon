@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import './App.css';
 
 import Header from './Header/Header';
 import Compose from './Compose/Compose';
+import Post from './Post/Post';
 
 class App extends Component {
   constructor() {
@@ -19,7 +21,9 @@ class App extends Component {
   }
   
   componentDidMount() {
-
+    axios.get('https://practiceapi.devmountain.com/api/posts').then( results => {
+      this.setState({ posts: results.data });
+    });
   }
 
   updatePost() {
@@ -45,6 +49,12 @@ class App extends Component {
 
           <Compose />
           
+          {
+            posts.map( post => (
+              <Post key={ post.id } />
+            ))
+          }
+
         </section>
       </div>
     );
