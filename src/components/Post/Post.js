@@ -4,63 +4,13 @@ import ReplyIcon from "react-icons/lib/md/chat-bubble-outline";
 import FavoriteIcon from "react-icons/lib/md/favorite-outline";
 import MessageIcon from "react-icons/lib/md/mail-outline";
 import MasterControlIcon from "react-icons/lib/md/more-vert";
-
 import "./Post.css";
 
 import Edit from "./Edit/Edit";
-
-//////////////////////////////////////////////////////// THIS COMPONENT IS BEING RENDERED IN THE *APP* COMPONENT
-
 export default class Post extends Component {
   constructor() {
     super();
-    render() {
-      const { editing, showMasterMenu } = this.state;
-      const { text, date } = this.props;
-    
-      return (
-        <section className="Post__parent" onClick={ this.hideMasterMenu }>
-    
-          <div className="Post__master-controls">
-            <MasterControlIcon onClick={ this.toggleMasterMenu } />
-    
-            <div className="Post__master-menu" style={ { display: showMasterMenu ? 'flex' : 'none' } }>
-              <span onClick={ this.showEdit }>Edit</span>
-              <span>Delete</span>
-            </div>
-          </div>
-    
-          <div className="Post__meta-data">
-            <div className="Post__profile-picture">
-              <ProfileIcon />
-            </div>
-    
-            <span className="Post__name">DevMountain</span>
-            <span className="Post__handle">@DevMountain</span>
-    
-            <span className="Post__date">- { date }</span>
-          </div>
-    
-          <div className="Post__content">
-            {
-              editing
-              ?
-                <Edit text=""
-                      hideEdit={ this.hideEdit } />
-              :
-                <span className="Post__text">{ text }</span>
-            }
-          </div>
-    
-          <div className="Post__user-controls">
-            <ReplyIcon className="Post__control-icon" />
-            <FavoriteIcon className="Post__control-icon" />
-            <MessageIcon className="Post__control-icon" />
-          </div>
-    
-        </section>
-      )
-    }
+
     this.state = {
       editing: false,
       showMasterMenu: false
@@ -99,8 +49,9 @@ export default class Post extends Component {
     // This is destructuring! You can also think of it as being written as so:
     // const editing = this.state.editing
     // const showMasterMenu = this.state.showMasterMenu
-    const { editing, showMasterMenu } = this.state;
 
+    const { editing, showMasterMenu } = this.state;
+    const { text, date } = this.props;
     return (
       // Main body of post
       <section className="Post__parent" onClick={this.hideMasterMenu}>
@@ -114,7 +65,10 @@ export default class Post extends Component {
             style={{ display: showMasterMenu ? "flex" : "none" }}
           >
             <span onClick={this.showEdit}>Edit</span>
-            <span>Delete</span>
+            <span onClick={() => this.props.deletePostFn(this.props.id)}>
+              Delete
+            </span>{" "}
+            {/* Remember to destructure deletePostFn off of props or use this.props.deletePostFn */}
           </div>
         </div>
 
@@ -139,11 +93,15 @@ export default class Post extends Component {
               }
         */}
         <div className="Post__content">
-          {// This has been pulled off of this.state via destructuring
-          editing ? (
-            <Edit text="" hideEdit={this.hideEdit} />
+          {editing ? (
+            <Edit
+              text={this.text}
+              id={this.props.id}
+              hideEdit={this.hideEdit}
+              updatePostFn={this.updatePostFn}
+            />
           ) : (
-            <span className="Post__text">POST TEXT GOES HERE</span>
+            <span className="Post__text">{text}</span>
           )}
         </div>
 
