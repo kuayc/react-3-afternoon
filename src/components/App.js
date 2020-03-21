@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import axios from "axios";
-
 import "./App.css";
 
 import Header from "./Header/Header";
@@ -21,33 +20,48 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get("https://practiceapi.devmountain.com/api/posts").then(results => {
-      this.setState({ posts: results.data });
+    let promise = axios.get("https://practiceapi.devmountain.com/api/posts");
+    promise.then(response => {
+      console.log(response.data);
+      this.setState({ posts: response.data });
     });
   }
 
   updatePost(id, text) {
-    axios
-      .put(`https://practiceapi.devmountain.com/api/posts?id=${id}`, { text })
-      .then(results => {
-        this.setState({ posts: results.data });
-      });
+    let promise = axios.put(
+      `https://practiceapi.devmountain.com/api/posts?id=${id}`,
+      { text }
+    );
+    promise.then(response => {
+      this.setState({ posts: response.data });
+    });
   }
 
   deletePost(id) {
-    axios
-      .delete(`https://practiceapi.devmountain.com/api/posts?id=${id}`)
-      .then(results => {
-        this.setState({ posts: results.data });
-      });
+    let promise = axios.delete(
+      `https://practiceapi.devmountain.com/api/posts?id=${id}`
+    );
+    promise.then(response => {
+      this.setState({ posts: response.data });
+    });
   }
 
   createPost(text) {
-    axios
-      .post("https://practiceapi.devmountain.com/api/posts", { text })
-      .then(results => {
-        this.setState({ posts: results.data });
-      });
+    let promise = axios.post("https://practiceapi.devmountain.com/api/posts", {
+      text
+    });
+    promise.then(response => {
+      this.setState({ posts: response.data });
+    });
+  }
+
+  searchPosts(text) {
+    let promise = axios.get(
+      `https://practiceapi.devmountain.com/api/posts/filter?text=${text}`
+    );
+    promise.then(response => {
+      this.setState({ posts: response.data });
+    });
   }
 
   render() {
@@ -55,16 +69,15 @@ class App extends Component {
 
     return (
       <div className="App__parent">
-        <Header />
+        <Header searchPostsFn={this.searchPosts} />
 
         <section className="App__content">
           <Compose createPostFn={this.createPost} />
-
           {posts.map(post => (
             <Post
-              key={post.id}
               id={post.id}
-              text={post.text.toString()}
+              key={post.id}
+              text={post.text}
               date={post.date}
               updatePostFn={this.updatePost}
               deletePostFn={this.deletePost}
