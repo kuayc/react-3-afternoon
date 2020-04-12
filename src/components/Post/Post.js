@@ -98,7 +98,7 @@ export default class Post extends Component {
           {// This has been pulled off of this.state via destructuring
           editing ? (
             <Edit
-              text=""
+              text={this.props.text}
               id={this.props.id}
               hideEdit={this.hideEdit}
               updatePostFn={this.props.updatePostFn}
@@ -108,7 +108,7 @@ export default class Post extends Component {
           )}
         </div>
 
-        {/* These are icons bottom left corner */}
+        {/* These are all of the cute little icons in the bottom left corner */}
         <div className="Post__user-controls">
           <ReplyIcon className="Post__control-icon" />
           <FavoriteIcon className="Post__control-icon" />
