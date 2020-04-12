@@ -1,17 +1,15 @@
 import React, { Component } from "react";
-import axios from "axios";
 import "./App.css";
-
 import Header from "./Header/Header";
 import Compose from "./Compose/Compose";
-import Post from "./Post/Post";
+import axios from "axios";
+import Posts from "./Post/Post";
 
 class App extends Component {
   constructor() {
     super();
-
     this.state = {
-      posts: []
+      posts: [],
     };
 
     this.updatePost = this.updatePost.bind(this);
@@ -20,69 +18,64 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let promise = axios.get("https://practiceapi.devmountain.com/api/posts");
-    promise.then(response => {
-      console.log(response.data);
-      this.setState({ posts: response.data });
-    });
+    axios
+      .get(`https://practiceapi.devmountain.com/api/posts`)
+      .then((results) => {
+        console.log(results);
+        this.setState({ posts: results.data });
+      })
+      .catch();
   }
 
   updatePost(id, text) {
-    let promise = axios.put(
-      `https://practiceapi.devmountain.com/api/posts?id=${id}`,
-      { text }
-    );
-    promise.then(response => {
-      this.setState({ posts: response.data });
-    });
+    axios
+      .put(`https://practiceapi.devmountain.com/api/posts?id=${id}`, { text })
+      .then((results) => {
+        console.log(results);
+        this.setState({ posts: results.data });
+      })
+      .catch();
   }
 
   deletePost(id) {
-    let promise = axios.delete(
-      `https://practiceapi.devmountain.com/api/posts?id=${id}`
-    );
-    promise.then(response => {
-      this.setState({ posts: response.data });
-    });
+    axios
+      .delete(`https://practiceapi.devmountain.com/api/posts?id=${id}`)
+      .then((results) => {
+        this.setState({ posts: results.data });
+      })
+      .catch();
   }
 
   createPost(text) {
-    let promise = axios.post("https://practiceapi.devmountain.com/api/posts", {
-      text
-    });
-    promise.then(response => {
-      this.setState({ posts: response.data });
-    });
-  }
-
-  searchPosts(text) {
-    let promise = axios.get(
-      `https://practiceapi.devmountain.com/api/posts/filter?text=${text}`
-    );
-    promise.then(response => {
-      this.setState({ posts: response.data });
-    });
+    axios
+      .post(`https://practiceapi.devmountain.com/api/posts`, { text })
+      .then((results) => {
+        this.setState({ posts: results.data });
+      });
   }
 
   render() {
+    // eslint-disable-next-line
     const { posts } = this.state;
 
     return (
       <div className="App__parent">
-        <Header searchPostsFn={this.searchPosts} />
+        <Header />
 
         <section className="App__content">
           <Compose createPostFn={this.createPost} />
-          {posts.map(post => (
-            <Post
-              id={post.id}
-              key={post.id}
-              text={post.text}
-              date={post.date}
-              updatePostFn={this.updatePost}
-              deletePostFn={this.deletePost}
-            />
-          ))}
+          {posts.map((post) => {
+            return (
+              <Posts
+                key={post.id}
+                text={post.text}
+                date={post.date}
+                id={post.id}
+                updatePostFn={this.updatePost}
+                deletePostFn={this.deletePost}
+              />
+            );
+          })}
         </section>
       </div>
     );
